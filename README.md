@@ -1,9 +1,21 @@
-# url-shortener
+<h1 align="center">🔗 url-shortener</h1>
 
-A small URL shortener with click tracking. GraphQL API, built with NestJS.
+<p align="center">A small URL shortener with click tracking — GraphQL API, built with NestJS.</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white" alt="NestJS">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/GraphQL-E10098?logo=graphql&logoColor=white" alt="GraphQL">
+  <img src="https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white" alt="JWT">
+</p>
 
 You register, create short links, and the API tracks each click (count, IP,
 user agent, referrer). Links are tied to the user who made them.
+
+```
+register → get token → createUrl → /r/abc123 → 302 redirect (+ logged click) → urlStats
+```
 
 ## Features
 
