@@ -63,6 +63,7 @@ GraphQL endpoint / playground: http://localhost:3000/graphql
 | Operation | Auth | What it does |
 |-----------|------|--------------|
 | `register` / `login` mutations | no | returns an access token |
+| `me` query | yes | the current user |
 | `createUrl` mutation | yes | makes a short link (optional custom slug) |
 | `myUrls` query | yes | your links |
 | `urlStats(slug)` query | yes | click stats for one of your links |
