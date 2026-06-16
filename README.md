@@ -23,14 +23,26 @@ register → get token → createUrl → /r/abc123 → 302 redirect (+ logged cl
 
 ## Features
 
-- shorten URLs with a random slug or your own custom one
-- redirect endpoint that records every click
-- per-link analytics: total clicks + IP, user agent, referrer, time
-- JWT auth, bcrypt-hashed passwords
-- links are scoped to their owner (you only see/manage your own)
-- rate limiting (60 req/min per IP)
-- input validation on everything (email, url, slug rules)
-- unit tests with Jest
+- **Shortening** — turn any long URL into a 7-character slug, or pass your own
+  custom slug. Custom slugs are checked for uniqueness; random ones retry on the
+  rare collision.
+- **Redirects with tracking** — `GET /r/:slug` issues a 302 to the original URL
+  and logs the visit (IP, user agent, referrer, timestamp) in the same request.
+- **Per-link analytics** — total click count plus the most recent clicks, served
+  through the `urlStats` query.
+- **Authentication** — register / log in to get a JWT; passwords are hashed with
+  bcrypt and never stored or returned in plaintext.
+- **Ownership** — every short URL belongs to the user who created it. You can
+  only list and view stats for your own links; asking about someone else's
+  returns a 403.
+- **Rate limiting** — 60 requests/minute per IP across both GraphQL and the
+  redirect route, to curb abuse.
+- **Validation** — all inputs are validated (valid email, password length,
+  proper URL with protocol, slug character/length rules) before they hit the DB.
+- **Self-documenting API** — every GraphQL type, field and operation has a
+  description, visible in Apollo Sandbox and the committed schema.
+- **Tested** — unit tests for the services and an end-to-end test covering the
+  full register → create → redirect → stats flow, run on CI.
 
 ## Stack
 
