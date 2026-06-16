@@ -17,6 +17,9 @@
 You register, create short links, and the API tracks each click (count, IP,
 user agent, referrer). Links are tied to the user who made them.
 
+> This is the backend. The React frontend lives in
+> [url-shortener-web](https://github.com/yashvisuals/url-shortener-web).
+
 ```
 register → get token → createUrl → /r/abc123 → 302 redirect (+ logged click) → urlStats
 ```
