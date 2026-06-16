@@ -1,14 +1,20 @@
 # URL Shortener + Analytics API
 
-A REST API built with **NestJS** + **TypeORM** + **MySQL** that shortens long URLs
-and tracks click analytics (count, IP, user-agent, referer, timestamps).
+A **GraphQL API** built with **NestJS** + **TypeORM** + **MySQL** that shortens long
+URLs and tracks click analytics (count, IP, user-agent, referer, timestamps).
+JWT authentication; short URLs are owned by the user who created them.
 
 ## Tech stack
 
 - **NestJS** (TypeScript) — modular architecture
+- **GraphQL** (code-first) with **Apollo Server**
 - **TypeORM** + **MySQL** (`mysql2` driver)
-- **class-validator** / **class-transformer** — DTO validation
-- **Swagger** — auto-generated API docs at `/docs`
+- **JWT auth** (`@nestjs/jwt` + Passport) with bcrypt-hashed passwords
+- **class-validator** — input validation on GraphQL inputs
+
+> The only REST endpoints are the public redirect (`GET /:slug`) and a health
+> check (`GET /health`) — a browser hitting a short link needs an HTTP 302, which
+> isn't something GraphQL handles. Everything else is GraphQL.
 
 ## Getting started
 
@@ -29,28 +35,37 @@ Copy `.env.example` to `.env` and set your MySQL credentials (`DB_PASSWORD`, etc
 npm install
 npm run start:dev
 ```
-App runs on http://localhost:3000 — Swagger docs at http://localhost:3000/docs
+GraphQL Playground: http://localhost:3000/graphql
 
-## API
+## GraphQL operations
 
-| Method | Route               | Description                                    |
-|--------|---------------------|------------------------------------------------|
-| POST   | `/urls`             | Create a short URL (optional `customSlug`)     |
-| GET    | `/urls`             | List all short URLs                            |
-| GET    | `/urls/:slug/stats` | Click analytics for a slug                     |
-| GET    | `/:slug`            | Redirect to the original URL (records a click) |
+| Operation | Type | Auth | Description |
+|-----------|------|------|-------------|
+| `register(input)` | mutation | – | Create an account, returns `{ accessToken }` |
+| `login(input)`    | mutation | – | Log in, returns `{ accessToken }` |
+| `createUrl(input)` | mutation | ✅ | Create a short URL (optional `customSlug`) |
+| `myUrls`           | query    | ✅ | List your short URLs |
+| `urlStats(slug)`   | query    | ✅ | Click analytics for one of your slugs |
+| `GET /:slug`       | REST     | –  | Redirect to the original URL (records a click) |
+
+Authenticated operations require an `Authorization: Bearer <accessToken>` header.
 
 ### Example
-```bash
-curl -X POST http://localhost:3000/urls \
-  -H "Content-Type: application/json" \
-  -d '{"originalUrl":"https://nestjs.com/some/long/path"}'
+```graphql
+# 1. register (returns accessToken)
+mutation { register(input: { email: "you@example.com", password: "secret123" }) { accessToken } }
+
+# 2. createUrl — set HTTP header: Authorization: Bearer <accessToken>
+mutation { createUrl(input: { originalUrl: "https://nestjs.com" }) { slug originalUrl } }
+
+# 3. analytics
+query { urlStats(slug: "abc1234") { totalClicks recentClicks { ipAddress clickedAt } } }
 ```
 
 ## Roadmap (planned enhancements)
 - [ ] Redis caching for hot redirects
 - [ ] Rate limiting (`@nestjs/throttler`)
-- [ ] Auth (JWT) so users own their links
+- [x] Auth (JWT) so users own their links
 - [ ] Unit + e2e test coverage
 - [ ] Dockerfile + docker-compose
 - [ ] GitHub Actions CI

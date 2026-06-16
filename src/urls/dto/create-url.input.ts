@@ -1,15 +1,13 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsOptional, IsString, IsUrl, Length, Matches } from 'class-validator';
 
-export class CreateUrlDto {
-  @ApiProperty({ example: 'https://example.com/some/very/long/path' })
+@InputType()
+export class CreateUrlInput {
+  @Field()
   @IsUrl({ require_protocol: true })
   originalUrl: string;
 
-  @ApiPropertyOptional({
-    example: 'my-link',
-    description: 'Optional custom slug (3-16 chars, letters/numbers/-/_)',
-  })
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
   @Length(3, 16)

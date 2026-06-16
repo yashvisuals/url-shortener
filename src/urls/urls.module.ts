@@ -5,12 +5,12 @@ import { User } from '../users/user.entity';
 import { ClickEvent } from './entities/click-event.entity';
 import { ShortUrl } from './entities/short-url.entity';
 import { RedirectController } from './redirect.controller';
-import { UrlsController } from './urls.controller';
+import { UrlsResolver } from './urls.resolver';
 import { UrlsService } from './urls.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ShortUrl, ClickEvent, User]), AuthModule],
-  controllers: [UrlsController, RedirectController],
-  providers: [UrlsService],
+  controllers: [RedirectController],
+  providers: [UrlsService, UrlsResolver],
 })
 export class UrlsModule {}

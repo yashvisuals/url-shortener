@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
-import { CreateUrlDto } from './dto/create-url.dto';
+import { CreateUrlInput } from './dto/create-url.input';
 import { ClickEvent } from './entities/click-event.entity';
 import { ShortUrl } from './entities/short-url.entity';
 
@@ -32,7 +32,7 @@ export class UrlsService {
   ) {}
 
   async create(
-    dto: CreateUrlDto,
+    dto: CreateUrlInput,
     user: User,
   ): Promise<ShortUrl & { shortUrl: string }> {
     let slug = dto.customSlug;
