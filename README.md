@@ -3,6 +3,13 @@
 <p align="center">A small URL shortener with click tracking — GraphQL API, built with NestJS.</p>
 
 <p align="center">
+  <strong>Live demo:</strong>
+  <a href="https://url-shortener-web-eight.vercel.app">url-shortener-web-eight.vercel.app</a>
+  <br />
+  <sub>free tier — the first request may take ~30s while the API wakes up</sub>
+</p>
+
+<p align="center">
   <img src="https://github.com/yashvisuals/url-shortener/actions/workflows/ci.yml/badge.svg" alt="CI">
 </p>
 
