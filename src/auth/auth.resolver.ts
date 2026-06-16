@@ -1,8 +1,12 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { User } from '../users/user.entity';
 import { AuthService } from './auth.service';
 import { AuthInput, AuthPayload } from './dto/auth.input';
+import { GetUser } from './get-user.decorator';
+import { GqlAuthGuard } from './gql-auth.guard';
 
-@Resolver()
+@Resolver(() => User)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
@@ -18,5 +22,13 @@ export class AuthResolver {
   })
   login(@Args('input') input: AuthInput) {
     return this.authService.login(input);
+  }
+
+  @Query(() => User, {
+    description: 'The currently authenticated user.',
+  })
+  @UseGuards(GqlAuthGuard)
+  me(@GetUser() user: User) {
+    return user;
   }
 }

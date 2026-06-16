@@ -60,6 +60,9 @@ type Mutation {
 }
 
 type Query {
+  """The currently authenticated user."""
+  me: User!
+
   """List the short URLs owned by the current user."""
   myUrls: [ShortUrl!]!
 
@@ -110,4 +113,16 @@ type UrlStats {
 
   """Total clicks recorded."""
   totalClicks: Int!
+}
+
+"""A registered account that owns short URLs."""
+type User {
+  """When the account was created."""
+  createdAt: DateTime!
+
+  """Email address used to log in."""
+  email: String!
+
+  """Unique user id."""
+  id: Int!
 }
