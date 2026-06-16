@@ -1,72 +1,68 @@
-# URL Shortener + Analytics API
+# url-shortener
 
-A **GraphQL API** built with **NestJS** + **TypeORM** + **MySQL** that shortens long
-URLs and tracks click analytics (count, IP, user-agent, referer, timestamps).
-JWT authentication; short URLs are owned by the user who created them.
+A small URL shortener with click tracking. GraphQL API, built with NestJS.
 
-## Tech stack
+You register, create short links, and the API tracks each click (count, IP,
+user agent, referrer). Links are tied to the user who made them.
 
-- **NestJS** (TypeScript) — modular architecture
-- **GraphQL** (code-first) with **Apollo Server**
-- **TypeORM** + **MySQL** (`mysql2` driver)
-- **JWT auth** (`@nestjs/jwt` + Passport) with bcrypt-hashed passwords
-- **class-validator** — input validation on GraphQL inputs
+## Stack
 
-> The only REST endpoints are the public redirect (`GET /r/:slug`) and a health
-> check (`GET /health`) — a browser hitting a short link needs an HTTP 302, which
-> isn't something GraphQL handles. Everything else is GraphQL.
+- NestJS + TypeScript
+- GraphQL (Apollo, code-first)
+- TypeORM + MySQL
+- JWT auth (Passport, bcrypt)
 
-## Getting started
+The redirect (`/r/:slug`) and `/health` are plain REST since a short link has to
+return an HTTP redirect. Everything else goes through GraphQL.
 
-### 1. Prerequisites
-- Node.js 20+
-- A running MySQL instance
+## Running it
 
-### 2. Create the database
-```sql
-CREATE DATABASE url_shortener;
-```
+You'll need Node 20+ and MySQL.
 
-### 3. Configure environment
-Copy `.env.example` to `.env` and set your MySQL credentials (`DB_PASSWORD`, etc.).
-
-### 4. Install & run
 ```bash
+# create the db
+mysql -u root -p -e "CREATE DATABASE url_shortener;"
+
+cp .env.example .env   # then fill in your DB password + a JWT_SECRET
+
 npm install
 npm run start:dev
 ```
-GraphQL Playground: http://localhost:3000/graphql
 
-## GraphQL operations
+GraphQL endpoint / playground: http://localhost:3000/graphql
 
-| Operation | Type | Auth | Description |
-|-----------|------|------|-------------|
-| `register(input)` | mutation | – | Create an account, returns `{ accessToken }` |
-| `login(input)`    | mutation | – | Log in, returns `{ accessToken }` |
-| `createUrl(input)` | mutation | ✅ | Create a short URL (optional `customSlug`) |
-| `myUrls`           | query    | ✅ | List your short URLs |
-| `urlStats(slug)`   | query    | ✅ | Click analytics for one of your slugs |
-| `GET /r/:slug`       | REST     | –  | Redirect to the original URL (records a click) |
+## API
 
-Authenticated operations require an `Authorization: Bearer <accessToken>` header.
+| Operation | Auth | What it does |
+|-----------|------|--------------|
+| `register` / `login` mutations | no | returns an access token |
+| `createUrl` mutation | yes | makes a short link (optional custom slug) |
+| `myUrls` query | yes | your links |
+| `urlStats(slug)` query | yes | click stats for one of your links |
+| `GET /r/:slug` | no | redirects, records the click |
 
-### Example
+Authenticated calls need an `Authorization: Bearer <token>` header.
+
+Quick example:
+
 ```graphql
-# 1. register (returns accessToken)
-mutation { register(input: { email: "you@example.com", password: "secret123" }) { accessToken } }
+mutation { register(input: { email: "me@test.com", password: "secret123" }) { accessToken } }
 
-# 2. createUrl — set HTTP header: Authorization: Bearer <accessToken>
-mutation { createUrl(input: { originalUrl: "https://nestjs.com" }) { slug originalUrl } }
+# set the Authorization header, then:
+mutation { createUrl(input: { originalUrl: "https://nestjs.com" }) { slug } }
 
-# 3. analytics
 query { urlStats(slug: "abc1234") { totalClicks recentClicks { ipAddress clickedAt } } }
 ```
 
-## Roadmap (planned enhancements)
-- [ ] Redis caching for hot redirects
-- [x] Rate limiting (`@nestjs/throttler`) — 60 req/min per IP
-- [x] Auth (JWT) so users own their links
-- [x] Unit test coverage (Jest)
-- [ ] Dockerfile + docker-compose
-- [ ] GitHub Actions CI
-- [ ] Database migrations (instead of `synchronize`)
+## Tests
+
+```bash
+npm test
+```
+
+## TODO
+
+- Redis cache for redirects
+- Docker + CI
+- proper migrations instead of `synchronize`
+- e2e tests
