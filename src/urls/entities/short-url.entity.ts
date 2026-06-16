@@ -11,27 +11,27 @@ import {
 import { User } from '../../users/user.entity';
 import { ClickEvent } from './click-event.entity';
 
-@ObjectType()
+@ObjectType({ description: 'A shortened URL and its click counter.' })
 @Entity('short_urls')
 export class ShortUrl {
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Unique short URL id.' })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
+  @Field({ description: 'Short code used in the redirect path (/r/:slug).' })
   @Index({ unique: true })
   @Column({ length: 16 })
   slug: string;
 
-  @Field()
+  @Field({ description: 'The destination the slug redirects to.' })
   @Column({ type: 'text' })
   originalUrl: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Total number of times the link was visited.' })
   @Column({ default: 0 })
   clickCount: number;
 
-  @Field()
+  @Field({ description: 'When the short URL was created.' })
   @CreateDateColumn()
   createdAt: Date;
 
@@ -42,7 +42,10 @@ export class ShortUrl {
   })
   owner: User | null;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int, {
+    nullable: true,
+    description: 'Id of the user who owns this link.',
+  })
   @Column({ nullable: true })
   ownerId: number | null;
 

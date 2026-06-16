@@ -9,14 +9,14 @@ import {
 } from 'typeorm';
 import { ShortUrl } from '../urls/entities/short-url.entity';
 
-@ObjectType()
+@ObjectType({ description: 'A registered account that owns short URLs.' })
 @Entity('users')
 export class User {
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Unique user id.' })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
+  @Field({ description: 'Email address used to log in.' })
   @Index({ unique: true })
   @Column({ length: 255 })
   email: string;
@@ -25,7 +25,7 @@ export class User {
   @Column()
   password: string;
 
-  @Field()
+  @Field({ description: 'When the account was created.' })
   @CreateDateColumn()
   createdAt: Date;
 

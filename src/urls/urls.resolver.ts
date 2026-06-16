@@ -13,18 +13,29 @@ import { UrlsService } from './urls.service';
 export class UrlsResolver {
   constructor(private readonly urlsService: UrlsService) {}
 
-  @Mutation(() => ShortUrl)
+  @Mutation(() => ShortUrl, {
+    description: 'Create a short URL owned by the current user.',
+  })
   createUrl(@Args('input') input: CreateUrlInput, @GetUser() user: User) {
     return this.urlsService.create(input, user);
   }
 
-  @Query(() => [ShortUrl], { name: 'myUrls' })
+  @Query(() => [ShortUrl], {
+    name: 'myUrls',
+    description: 'List the short URLs owned by the current user.',
+  })
   myUrls(@GetUser() user: User) {
     return this.urlsService.findAllForUser(user);
   }
 
-  @Query(() => UrlStats, { name: 'urlStats' })
-  urlStats(@Args('slug') slug: string, @GetUser() user: User) {
+  @Query(() => UrlStats, {
+    name: 'urlStats',
+    description: 'Click analytics for one of your short URLs.',
+  })
+  urlStats(
+    @Args('slug', { description: 'The slug to fetch stats for.' }) slug: string,
+    @GetUser() user: User,
+  ) {
     return this.urlsService.getStats(slug, user);
   }
 }

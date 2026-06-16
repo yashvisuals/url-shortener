@@ -2,24 +2,44 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Credentials for registering or logging in."""
 input AuthInput {
+  """A valid email address."""
   email: String!
+
+  """Password, at least 6 characters."""
   password: String!
 }
 
+"""Returned after a successful register or login."""
 type AuthPayload {
+  """JWT to send as `Authorization: Bearer <token>`."""
   accessToken: String!
 }
 
+"""A single recorded visit to a short URL."""
 type ClickInfo {
+  """When the click happened."""
   clickedAt: DateTime!
+
+  """IP address the click came from."""
   ipAddress: String
+
+  """Referring page, if any."""
   referer: String
+
+  """Browser/client user-agent string."""
   userAgent: String
 }
 
+"""Input for creating a new short URL."""
 input CreateUrlInput {
+  """
+  Optional custom slug (3-16 chars: letters, numbers, - or _). A random one is generated if omitted.
+  """
   customSlug: String
+
+  """The URL to shorten (must include http/https)."""
   originalUrl: String!
 }
 
@@ -29,30 +49,65 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  """Create a short URL owned by the current user."""
   createUrl(input: CreateUrlInput!): ShortUrl!
+
+  """Log in with existing credentials and return an access token."""
   login(input: AuthInput!): AuthPayload!
+
+  """Create a new account and return an access token."""
   register(input: AuthInput!): AuthPayload!
 }
 
 type Query {
+  """List the short URLs owned by the current user."""
   myUrls: [ShortUrl!]!
-  urlStats(slug: String!): UrlStats!
+
+  """Click analytics for one of your short URLs."""
+  urlStats(
+    """The slug to fetch stats for."""
+    slug: String!
+  ): UrlStats!
 }
 
+"""A shortened URL and its click counter."""
 type ShortUrl {
+  """Total number of times the link was visited."""
   clickCount: Int!
+
+  """When the short URL was created."""
   createdAt: DateTime!
+
+  """Unique short URL id."""
   id: Int!
+
+  """The destination the slug redirects to."""
   originalUrl: String!
+
+  """Id of the user who owns this link."""
   ownerId: Int
+
+  """Short code used in the redirect path (/r/:slug)."""
   slug: String!
 }
 
+"""Click analytics for one short URL."""
 type UrlStats {
+  """When the short URL was created."""
   createdAt: DateTime!
+
+  """The destination URL."""
   originalUrl: String!
+
+  """Up to the 10 most recent clicks."""
   recentClicks: [ClickInfo!]!
+
+  """The full short URL (BASE_URL + /r/ + slug)."""
   shortUrl: String!
+
+  """The short code."""
   slug: String!
+
+  """Total clicks recorded."""
   totalClicks: Int!
 }
