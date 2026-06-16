@@ -3,6 +3,10 @@
 <p align="center">A small URL shortener with click tracking — GraphQL API, built with NestJS.</p>
 
 <p align="center">
+  <img src="https://github.com/yashvisuals/url-shortener/actions/workflows/ci.yml/badge.svg" alt="CI">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white" alt="NestJS">
   <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/GraphQL-E10098?logo=graphql&logoColor=white" alt="GraphQL">
