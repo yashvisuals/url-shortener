@@ -5,6 +5,17 @@ A small URL shortener with click tracking. GraphQL API, built with NestJS.
 You register, create short links, and the API tracks each click (count, IP,
 user agent, referrer). Links are tied to the user who made them.
 
+## Features
+
+- shorten URLs with a random slug or your own custom one
+- redirect endpoint that records every click
+- per-link analytics: total clicks + IP, user agent, referrer, time
+- JWT auth, bcrypt-hashed passwords
+- links are scoped to their owner (you only see/manage your own)
+- rate limiting (60 req/min per IP)
+- input validation on everything (email, url, slug rules)
+- unit tests with Jest
+
 ## Stack
 
 - NestJS + TypeScript
