@@ -1,11 +1,13 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../users/user.entity';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { ClickEvent } from './entities/click-event.entity';
 import { ShortUrl } from './entities/short-url.entity';
@@ -29,7 +31,10 @@ export class UrlsService {
     private readonly config: ConfigService,
   ) {}
 
-  async create(dto: CreateUrlDto): Promise<ShortUrl & { shortUrl: string }> {
+  async create(
+    dto: CreateUrlDto,
+    user: User,
+  ): Promise<ShortUrl & { shortUrl: string }> {
     let slug = dto.customSlug;
 
     if (slug) {
@@ -41,13 +46,20 @@ export class UrlsService {
       slug = await this.generateUniqueSlug();
     }
 
-    const entity = this.urls.create({ slug, originalUrl: dto.originalUrl });
+    const entity = this.urls.create({
+      slug,
+      originalUrl: dto.originalUrl,
+      ownerId: user.id,
+    });
     const saved = await this.urls.save(entity);
     return { ...saved, shortUrl: this.buildShortUrl(saved.slug) };
   }
 
-  findAll(): Promise<ShortUrl[]> {
-    return this.urls.find({ order: { createdAt: 'DESC' } });
+  findAllForUser(user: User): Promise<ShortUrl[]> {
+    return this.urls.find({
+      where: { ownerId: user.id },
+      order: { createdAt: 'DESC' },
+    });
   }
 
   /** Resolve a slug to its target URL and record a click event. */
@@ -70,10 +82,13 @@ export class UrlsService {
     return url.originalUrl;
   }
 
-  async getStats(slug: string) {
+  async getStats(slug: string, user: User) {
     const url = await this.urls.findOne({ where: { slug } });
     if (!url) {
       throw new NotFoundException(`no URL found for slug "${slug}"`);
+    }
+    if (url.ownerId !== user.id) {
+      throw new ForbiddenException('you do not own this short URL');
     }
 
     const recent = await this.clicks.find({
