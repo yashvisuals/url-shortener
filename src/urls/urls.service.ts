@@ -132,6 +132,6 @@ export class UrlsService {
 
   private buildShortUrl(slug: string): string {
     const base = this.config.get<string>('BASE_URL', 'http://localhost:3000');
-    return `${base.replace(/\/$/, '')}/${slug}`;
+    return `${base.replace(/\/$/, '')}/r/${slug}`;
   }
 }

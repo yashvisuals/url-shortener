@@ -8,7 +8,7 @@ import { UrlsService } from './urls.service';
 export class RedirectController {
   constructor(private readonly urlsService: UrlsService) {}
 
-  @Get(':slug')
+  @Get('r/:slug')
   @Redirect()
   async redirect(@Param('slug') slug: string, @Req() req: Request) {
     const url = await this.urlsService.resolveAndTrack(slug, {

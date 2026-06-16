@@ -12,7 +12,7 @@ JWT authentication; short URLs are owned by the user who created them.
 - **JWT auth** (`@nestjs/jwt` + Passport) with bcrypt-hashed passwords
 - **class-validator** — input validation on GraphQL inputs
 
-> The only REST endpoints are the public redirect (`GET /:slug`) and a health
+> The only REST endpoints are the public redirect (`GET /r/:slug`) and a health
 > check (`GET /health`) — a browser hitting a short link needs an HTTP 302, which
 > isn't something GraphQL handles. Everything else is GraphQL.
 
@@ -46,7 +46,7 @@ GraphQL Playground: http://localhost:3000/graphql
 | `createUrl(input)` | mutation | ✅ | Create a short URL (optional `customSlug`) |
 | `myUrls`           | query    | ✅ | List your short URLs |
 | `urlStats(slug)`   | query    | ✅ | Click analytics for one of your slugs |
-| `GET /:slug`       | REST     | –  | Redirect to the original URL (records a click) |
+| `GET /r/:slug`       | REST     | –  | Redirect to the original URL (records a click) |
 
 Authenticated operations require an `Authorization: Bearer <accessToken>` header.
 

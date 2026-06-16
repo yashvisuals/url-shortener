@@ -2,6 +2,7 @@ import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -18,7 +19,9 @@ import { UrlsModule } from './urls/urls.module';
       sortSchema: true,
       // Expose the request on the GraphQL context so passport-jwt can read it.
       context: ({ req }: { req: unknown }) => ({ req }),
-      playground: true,
+      // Use Apollo Sandbox (the modern replacement for GraphQL Playground).
+      playground: false,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
