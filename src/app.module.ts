@@ -39,6 +39,11 @@ import { UrlsModule } from './urls/urls.module';
         database: config.get<string>('DB_NAME', 'url_shortener'),
         autoLoadEntities: true,
         synchronize: config.get<string>('DB_SYNCHRONIZE') === 'true',
+        // Managed DBs (e.g. Aiven) require TLS. Off locally, on in production.
+        ssl:
+          config.get<string>('DB_SSL') === 'true'
+            ? { rejectUnauthorized: false }
+            : undefined,
       }),
     }),
     AuthModule,
