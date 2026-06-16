@@ -64,9 +64,9 @@ query { urlStats(slug: "abc1234") { totalClicks recentClicks { ipAddress clicked
 
 ## Roadmap (planned enhancements)
 - [ ] Redis caching for hot redirects
-- [ ] Rate limiting (`@nestjs/throttler`)
+- [x] Rate limiting (`@nestjs/throttler`) — 60 req/min per IP
 - [x] Auth (JWT) so users own their links
-- [ ] Unit + e2e test coverage
+- [x] Unit test coverage (Jest)
 - [ ] Dockerfile + docker-compose
 - [ ] GitHub Actions CI
 - [ ] Database migrations (instead of `synchronize`)
