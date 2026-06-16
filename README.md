@@ -77,15 +77,3 @@ mutation { createUrl(input: { originalUrl: "https://nestjs.com" }) { slug } }
 query { urlStats(slug: "abc1234") { totalClicks recentClicks { ipAddress clickedAt } } }
 ```
 
-## Tests
-
-```bash
-npm test
-```
-
-## TODO
-
-- Redis cache for redirects
-- Docker + CI
-- proper migrations instead of `synchronize`
-- e2e tests
