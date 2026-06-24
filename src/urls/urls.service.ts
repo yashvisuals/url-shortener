@@ -115,7 +115,7 @@ export class UrlsService {
   private async generateUniqueSlug(): Promise<string> {
     // Retry on the rare collision rather than assuming uniqueness.
     for (let attempt = 0; attempt < 5; attempt++) {
-      const slug = this.randomSlug(7);
+      const slug = this.randomSlug(5);
       const exists = await this.urls.findOne({ where: { slug } });
       if (!exists) return slug;
     }
@@ -132,6 +132,6 @@ export class UrlsService {
 
   private buildShortUrl(slug: string): string {
     const base = this.config.get<string>('BASE_URL', 'http://localhost:3000');
-    return `${base.replace(/\/$/, '')}/r/${slug}`;
+    return `${base.replace(/\/$/, '')}/${slug}`;
   }
 }
